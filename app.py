@@ -256,7 +256,8 @@ def analyze_customer_value(df_sales):
             st.success(
                 f"✅ Diferencia estadísticamente significativa (p={p_value:.4f})")
         else:
-            st.warning(f"⚠️ Diferencia NO significativa (p={p_value:.4f})")
+            st.info(
+                f"ℹ️ Diferencia NO significativa (p={p_value:.4f}) - Los valores son prácticamente iguales")
 
     with col2:
         # Histograma de distribución por tipo de cliente
@@ -440,8 +441,9 @@ with tab2:
     st.markdown(f"""
     <div class="insight-box">
     <h4>Respuesta:</h4>
-    <p>Los clientes <strong>returning</strong> generan mayor valor promedio por orden: <strong>₡{returning_avg:,.0f}</strong> vs <strong>₡{new_avg:,.0f}</strong> de los nuevos.</p>
-    <p>Esto representa una diferencia del <strong>{((returning_avg/new_avg - 1) * 100):.1f}%</strong> más valor por orden.</p>
+    <p>Los clientes <strong>new y returning tienen prácticamente el mismo valor promedio por orden</strong>: ₡{new_avg:,.0f} vs ₡{returning_avg:,.0f}.</p>
+    <p>La diferencia de solo <strong>₡{abs(returning_avg-new_avg):,.0f} (0.3%)</strong> NO es estadísticamente significativa (p=0.9278).</p>
+    <p><strong>Conclusión:</strong> Ambos tipos de cliente gastan igual por pedido. La diferencia está en el volumen, no en el valor unitario.</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -563,11 +565,12 @@ with tab2:
     <div class="insight-box">
     <h4>Observaciones sobre Clientes Returning:</h4>
     <ul>
-        <li><strong>Dominancia:</strong> Representan el {returning_metrics['% Órdenes returning']:.1f}% de las órdenes pero generan el {returning_metrics['% Ingresos returning']:.1f}% de los ingresos</li>
-        <li><strong>Valor Superior:</strong> Su ticket promedio (₡{returning_metrics['Ticket promedio (returning)']:,.0f}) es {((customer_metrics.loc['returning', 'Promedio']/customer_metrics.loc['new', 'Promedio'] - 1) * 100):.1f}% mayor que nuevos</li>
+        <li><strong>Dominancia en volumen:</strong> Representan el {returning_metrics['% Órdenes returning']:.1f}% de las órdenes pero generan el {returning_metrics['% Ingresos returning']:.1f}% de los ingresos</li>
+        <li><strong>Valor unitario similar:</strong> Su ticket promedio (₡{returning_metrics['Ticket promedio (returning)']:,.0f}) es prácticamente igual al de nuevos (₡{df_sales[df_sales['tipo_de_cliente'] == 'new']['ingresos_netos'].mean():,.0f})</li>
+        <li><strong>Frecuencia igual:</strong> Tanto new como returning hacen en promedio 1 pedido por cliente en el período</li>
+        <li><strong>Base de clientes:</strong> Hay 2.6 veces más clientes returning (518) que new (201) en el dataset</li>
         <li><strong>Uso de Cupones:</strong> {returning_metrics['% Uso de cupón (returning)']:.1f}% usa cupones vs {df_sales[df_sales['tipo_de_cliente'] == 'new']['usa_cupon'].mean()*100:.1f}% de nuevos</li>
-        <li><strong>Comportamiento:</strong> Compran más artículos por orden ({returning_metrics['Artículos promedio (returning)']:.2f} vs {df_sales[df_sales['tipo_de_cliente'] == 'new']['articulos_vendidos'].mean():.2f})</li>
-        <li><strong>Implicación:</strong> Son el motor del negocio - requieren estrategias de retención premium</li>
+        <li><strong>Implicación:</strong> Su valor está en ser la mayoría de la base activa, no en gastar más individualmente</li>
     </ul>
     </div>
     """, unsafe_allow_html=True)
