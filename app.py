@@ -304,21 +304,23 @@ def analyze_coupon_impact(df_sales):
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 
-    # Gráfico 1: Valor promedio
+    # Gráfico 1: Valor promedio - Paleta azul profesional
     avg_by_coupon = df_sales.groupby('usa_cupon')['ingresos_netos'].mean()
     labels = ['Sin Cupón', 'Con Cupón']
-    bars1 = ax1.bar(labels, avg_by_coupon.values, color=['#FFB3BA', '#BAFFC9'])
-    ax1.set_title('Valor Neto Promedio por Uso de Cupón')
-    ax1.set_ylabel('Valor Promedio ($)')
+    colors_value = ['#3498db', '#2c3e50']  # Azul claro y azul oscuro
+    bars1 = ax1.bar(labels, avg_by_coupon.values, color=colors_value)
+    ax1.set_title('Valor Neto Promedio por Uso de Cupón', fontweight='bold')
+    ax1.set_ylabel('Valor Promedio (₡)')
 
     for bar, value in zip(bars1, avg_by_coupon.values):
         ax1.text(bar.get_x() + bar.get_width()/2., value + 500,
-                 f'${value:,.0f}', ha='center', va='bottom', fontweight='bold')
+                 f'₡{value:,.0f}', ha='center', va='bottom', fontweight='bold')
 
-    # Gráfico 2: Artículos promedio
+    # Gráfico 2: Artículos promedio - Paleta verde/rojo moderna
     avg_articles = df_sales.groupby('usa_cupon')['articulos_vendidos'].mean()
-    bars2 = ax2.bar(labels, avg_articles.values, color=['#FFD93D', '#6BCF7F'])
-    ax2.set_title('Artículos Promedio por Uso de Cupón')
+    colors_articles = ['#e74c3c', '#27ae60']  # Rojo coral y verde esmeralda
+    bars2 = ax2.bar(labels, avg_articles.values, color=colors_articles)
+    ax2.set_title('Artículos Promedio por Uso de Cupón', fontweight='bold')
     ax2.set_ylabel('Artículos Promedio')
 
     for bar, value in zip(bars2, avg_articles.values):
